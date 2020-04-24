@@ -28,7 +28,11 @@ app.use(metricsMiddleware.requestMiddleware(metrics));
 
 // Your routes should be after you setup the requestMiddleware and before the errorMiddleware
 app.get('/', (req, res) => {
-  metrics.increment('hr_test_request');
+  for (let i = 0; i < 10000; i++) {
+    metrics.increment('hr_test_request', { employer_id: '123' });
+    metrics.increment('hr_test_request2');
+  }
+
   res.send('Sent');
 });
 
@@ -39,6 +43,7 @@ app.listen(PORT, () => {
   metrics.restartSignal();
   metrics.collectAppInformation();
   // metrics.collectSystemInformation();
+  metrics.increment('hr_test_request', { employer_id: '123' });
   console.log(`API running on port ${PORT}`); //eslint-disable-line
 });
 
