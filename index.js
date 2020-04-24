@@ -29,6 +29,7 @@ app.use(metricsMiddleware.requestMiddleware(metrics));
 // Your routes should be after you setup the requestMiddleware and before the errorMiddleware
 app.get('/', (req, res) => {
   for (let i = 0; i < 10000; i++) {
+    metrics.gauge('hr_test_request', { employer_id: '123' });
     metrics.increment('hr_test_request', { employer_id: '123' });
     metrics.increment('hr_test_request2');
   }
