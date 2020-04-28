@@ -29,21 +29,15 @@ app.use(metricsMiddleware.requestMiddleware(metrics));
 // Your routes should be after you setup the requestMiddleware and before the errorMiddleware
 app.get('/', (req, res) => {
   for (let i = 0; i < 10000; i++) {
-    setTimeout(() => {
-      metrics.gauge('hr_test_request', { employer_id: '123' });
-      metrics.increment('hr_test_request', { employer_id: '123' });
-      metrics.increment('hr_test_request2');
-      metrics.increment('metric-test-lv');
-    }, 300);
+    metrics.increment('hr_test_request');
+    metrics.increment('metric-test-lv');
   }
   res.send('Sent');
 });
 
 app.get('/license', async (req, res) => {
   for (let i = 0; i < 500; i++) {
-    setTimeout(() => {
-      metrics.increment('license');
-    }, 300);
+    metrics.increment('license');
   }
   res.send(`Increment License 500`);
 });
