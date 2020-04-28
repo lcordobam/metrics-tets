@@ -19,7 +19,7 @@ metrics.connect({
 const { PORT = 3000 } = process.env;
 
 // Uncomment the following code to log errors from the library
-metrics.socket.on('error', (error) => {
+metrics.socket.on('error', error => {
   console.error('Error in socket: ', error.message);
 });
 
@@ -29,12 +29,23 @@ app.use(metricsMiddleware.requestMiddleware(metrics));
 // Your routes should be after you setup the requestMiddleware and before the errorMiddleware
 app.get('/', (req, res) => {
   for (let i = 0; i < 10000; i++) {
-    metrics.gauge('hr_test_request', { employer_id: '123' });
-    metrics.increment('hr_test_request', { employer_id: '123' });
-    metrics.increment('hr_test_request2');
+    setTimeout(() => {
+      metrics.gauge('hr_test_request', { employer_id: '123' });
+      metrics.increment('hr_test_request', { employer_id: '123' });
+      metrics.increment('hr_test_request2');
+      metrics.increment('metric-test-lv');
+    }, 300);
   }
-
   res.send('Sent');
+});
+
+app.get('/license', async (req, res) => {
+  for (let i = 0; i < 500; i++) {
+    setTimeout(() => {
+      metrics.increment('license');
+    }, 300);
+  }
+  res.send(`Increment License 500`);
 });
 
 app.use(metricsMiddleware.errorMiddleware(metrics));
@@ -45,6 +56,7 @@ app.listen(PORT, () => {
   metrics.collectAppInformation();
   // metrics.collectSystemInformation();
   metrics.increment('hr_test_request', { employer_id: '123' });
+  metrics.increment('metric-test-lv');
   console.log(`API running on port ${PORT}`); //eslint-disable-line
 });
 
